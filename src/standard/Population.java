@@ -1,9 +1,10 @@
 package standard;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeSet;
 
 import alphabet.MonoCandidate;
 import alphabet.Fitness;
@@ -20,13 +21,13 @@ public class Population {
 	private int size;
 	
 	private HashSet<MonoCandidate> unordered;
-	
-	private TreeSet<MonoCandidate> ordered;
+
+	private ArrayList<MonoCandidate> ordered;
 	private boolean orderIsCurrent;
 	
 	public Population(int size){
 		this.unordered = new HashSet<MonoCandidate>();
-		this.ordered = new TreeSet<MonoCandidate>();
+		this.ordered = new ArrayList<MonoCandidate>();
 		this.orderIsCurrent = false;
 		
 		this.size = size;
@@ -45,11 +46,18 @@ public class Population {
 		return this.unordered;
 	}
 
-	public TreeSet<MonoCandidate> sortCandidates(){
+	public ArrayList<MonoCandidate> sortCandidates(){
 		if (!this.orderIsCurrent){
+			// refresh our list
+			this.ordered.clear();
 			this.ordered.addAll(this.unordered);
+			
+			// sort it
+			Collections.sort(this.ordered);
+			
+			// update cache indicator
+			this.orderIsCurrent = true;
 		}
-		this.orderIsCurrent = true;
 		return this.ordered;
 	}
 	
@@ -77,6 +85,19 @@ public class Population {
 	
 	public String toString(){
 		return "Pop has " + this.currentSize() + "/" + this.idealSize();
+	}
+	
+	public String popString(){
+		String retVal = "";
+		for (MonoCandidate c : this.unordered){
+			retVal += c+"\n";
+		}
+		return retVal;
+	}
+
+	public void clearOrdering() {
+		this.orderIsCurrent = false;
+		this.ordered.clear();
 	}
 	
 }

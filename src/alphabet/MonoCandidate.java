@@ -47,16 +47,12 @@ public class MonoCandidate implements Comparable<MonoCandidate> {
 		return genes;
 	}
 
-	public void setGenes(String genes) {
-		this.genes = genes;
-	}
-
 	@Override
 	public int compareTo(MonoCandidate other) {
 		if (this.getFitness() > other.getFitness()) {
-			return 1;
+			return 2;
 		} else if (this.getFitness() < other.getFitness()) {
-			return -1;
+			return -2;
 		}
 		return 0;
 	}
@@ -69,14 +65,21 @@ public class MonoCandidate implements Comparable<MonoCandidate> {
 	}
 
 	public void updateGenes(String str) {
-		// reset the fitness
-		this.fitness = -1;
-
-		this.genes = str;
+		// lets make sure these are new before we recalculate
+		if (!str.equals(this.getGenes())){
+			// reset the fitness
+			this.fitness = -1;
+			
+			this.genes = str;
+		}
 	}
 
 	public String toString(){
 		return this.genes;
+	}
+
+	public MonoCandidate copy() {
+		return new MonoCandidate(this.fittor,this.genes.toString());
 	}
 	
 }

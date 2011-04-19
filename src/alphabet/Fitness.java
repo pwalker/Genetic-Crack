@@ -24,7 +24,7 @@ public class Fitness {
 	public Fitness(MonoCipher c, String cText) {
 		this("/usr/share/dict/words",c,cText);
 	}
-
+	
 	/**
 	 * Read the words in the given file (must be scanner friendly), into the
 	 * cool data structure for easy access
@@ -47,7 +47,7 @@ public class Fitness {
 				String word = s.next().toLowerCase().replaceAll("[^a-z]", "");
 				
 				// we don't want to add the letters
-				if (word.length() > 1){
+				if (word.length() > 2){
 					Fitness.trie.add(word);
 				}
 			}

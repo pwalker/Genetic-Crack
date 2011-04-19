@@ -18,9 +18,9 @@ public class MonoDriver {
 		
 		Fitness fitness = new Fitness(new MonoCipher(),plainText);
 		
-		Mono population = new Mono(500,fitness);
+		Mono population = new Mono(5000,fitness);
 
-		Random rand = new Random(2);
+		Random rand = new Random();
 		
 		MonoGeneTool geneTool = new MonoGeneTool(rand);
 		
@@ -29,8 +29,15 @@ public class MonoDriver {
 		Overlord overlord = new Overlord(population, geneTool, manipulator);
 		
 		//while(!overlord.isDone()){
-			System.err.println("running a generation...");
-			overlord.runGeneration();
+		for (int i=0; i<1000; i++){
+			//System.err.println("running a generation...");
+			int ret = overlord.runGeneration();
+			
+			// TODO debugging
+			if (ret >= 73){
+				break;
+			}
+		}
 		//}
 		
 	}

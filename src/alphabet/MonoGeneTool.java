@@ -43,7 +43,8 @@ public class MonoGeneTool implements GeneTool {
 		int swapsPossible = (int) Math.floor((retVal.length() * threshold) / 2);
 
 		// figure out the number of swaps
-		int swaps = Math.max(this.r.nextInt(swapsPossible + 1), 1);
+		//int swaps = Math.max(this.r.nextInt(swapsPossible + 1), 1);
+		int swaps = this.r.nextInt(swapsPossible + 1);
 
 		// do the swaps
 		for (int i = 0; i < swaps; i++) {
@@ -98,8 +99,9 @@ public class MonoGeneTool implements GeneTool {
 		int swapsPossible = (int) Math.floor((ret1.length() * threshold) / 2);
 
 		// figure out the number of swaps
-		int swaps = Math.max(this.r.nextInt(swapsPossible + 1), 1);
-
+		//int swaps = Math.max(this.r.nextInt(swapsPossible + 1), 1);
+		int swaps = this.r.nextInt(swapsPossible + 1);
+		
 		for (int i = 0; i < swaps; i++) {
 			// switch the references at random
 			if (this.r.nextBoolean()) {

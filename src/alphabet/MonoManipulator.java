@@ -2,6 +2,7 @@ package alphabet;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.TreeSet;
@@ -43,12 +44,13 @@ public class MonoManipulator implements Manipulator {
 		ArrayList<MonoCandidate> retVal = new ArrayList<MonoCandidate>();
 
 		// get the ordered list of candidates
-		TreeSet<MonoCandidate> list = pop.sortCandidates();
-
+		// ArrayList<MonoCandidate> list = pop.sortCandidates();
+		Collection<MonoCandidate> set = pop.getCandidates();
+		
 		// sum the fitness
 		double totalFit = 0;
-		for (MonoCandidate c : list) {
-			totalFit += c.getFitness();
+		for (MonoCandidate c : set) {
+			totalFit += Math.max(c.getFitness(),1);
 		}
 
 		// round it
@@ -58,15 +60,15 @@ public class MonoManipulator implements Manipulator {
 		// TODO this is O(n^2)
 		while (retVal.size() < n) {
 			int x = this.r.nextInt(totalFitness);
-			spinWheel: for (MonoCandidate c : list) {
+			spinWheel: for (MonoCandidate c : set) {
 				// did we land on the right one?
 				if (x < c.getFitness()) {
-					retVal.add(c);
+					retVal.add(c.copy());
 					break spinWheel;
 				}
 
 				// skip to the next wheel position.
-				x = x - c.getFitness();
+				x = x - Math.max(c.getFitness(),1);
 			}
 		}
 
@@ -80,7 +82,7 @@ public class MonoManipulator implements Manipulator {
 		// get that many candidates
 		Collection<MonoCandidate> newCands = this.select(pop, growth);
 		for (MonoCandidate c : newCands) {
-			pop.add(c);
+			pop.add(c.copy());
 		}
 	}
 
@@ -106,6 +108,7 @@ public class MonoManipulator implements Manipulator {
 			next2.updateGenes(result[1]);
 		}
 		
+		pop.clearOrdering();
 	}
 
 	@Override
@@ -113,6 +116,7 @@ public class MonoManipulator implements Manipulator {
 		for (MonoCandidate c : pop.getCandidates()){
 			c.updateGenes(geneTool.mutate(c.getGenes()));
 		}
+		pop.clearOrdering();
 	}
 
 }

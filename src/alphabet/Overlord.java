@@ -24,24 +24,37 @@ public class Overlord {
 	/**
 	 * Do the steps necessary for a generic Genetic algorithm generation
 	 */
-	public void runGeneration(){
+	public int runGeneration(){
 		// Selection
-		System.err.println("Selecting...");
+		//System.err.println("Selecting...");
 		this.population.carryOver(this.manipulator.select(this.population,.7));
-	
+
+		//System.err.println(this.population.popString());
+		
 		// Replication (fill the population back up)
 		// TODO should the replicator and selector be the same, i.e. Manipulator?
-		System.err.println("Reproducing...");
+		//System.err.println("Reproducing...");
 		this.manipulator.fillPopulation(this.population);
+
+		//System.err.println(this.population.popString());
 	
 		// Let's share some DNA! TODO this may be out of order
-		System.err.println("Crossover...");
+		//System.err.println("Crossover...");
 		this.manipulator.crossOver(this.population, this.geneTool);
-		
+
+		//System.err.println(this.population.popString());
+	
 		// Let's spread so cosmic rays!
-		System.err.println("Mutation...");
+		//System.err.println("Mutation...");
 		this.manipulator.mutate(this.population, this.geneTool);
+
+		//System.err.println(this.population.popString());
+	
+
+		System.out.println(((Mono)this.population).bestCandidate() + " " + ((Mono)this.population).bestCandidate().getFitness());
+		//System.err.println("Done.");
 		
+		return ((Mono)this.population).bestCandidate().getFitness();
 	}
 
 	/**
