@@ -18,7 +18,7 @@ public class MonoGeneTool implements GeneTool {
 	
 	@Override
 	public String mutate(String str) {
-		return (this.mutate(str, 1));
+		return (this.mutate(str, .2));
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class MonoGeneTool implements GeneTool {
 
 	@Override
 	public String cross(String str1, String str2) {
-		return this.cross(str1, str2, 1);
+		return this.cross(str1, str2, .4);
 	}
 
 	/**

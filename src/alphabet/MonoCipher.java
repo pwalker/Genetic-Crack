@@ -6,8 +6,8 @@ public class MonoCipher {
 
 	String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-	public String decrypt(String mapping, String plainText) {
-		plainText = plainText.toLowerCase().replaceAll("[^a-z]", "");
+	public String decrypt(String mapping, String cipherText) {
+		cipherText = cipherText.toLowerCase().replaceAll("[^a-z]", "");
 		// check map
 		if (mapping.length() != 26) {
 			throw new UnsupportedOperationException("alphabet map isn't right");
@@ -21,8 +21,8 @@ public class MonoCipher {
 		}
 		
 		String retVal = "";
-		for (int i=0; i < plainText.length(); i++){
-			retVal += map.get(plainText.charAt(i));
+		for (int i=0; i < cipherText.length(); i++){
+			retVal += map.get(cipherText.charAt(i));
 		}
 
 		return retVal;
