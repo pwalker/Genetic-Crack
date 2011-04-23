@@ -47,7 +47,7 @@ public class Fitness {
 				String word = s.next().toLowerCase().replaceAll("[^a-z]", "");
 				
 				// we don't want to add the letters
-				if (word.length() > 2){
+				if (word.length() > 3){
 					Fitness.trie.add(word);
 				}
 			}
@@ -71,8 +71,18 @@ public class Fitness {
 		int acc = 0;
 		
 		for (int i=0; i<plainText.length(); i++){
-			if (trie.containsBeginning(plainText.substring(i)) > 0){
-				acc++;
+			int n = trie.containsBeginning(plainText.substring(i));
+			if (n > 0){
+				// skip over the word
+				i += n;
+				
+				// acc += n;
+				// try and make the fitness weight longer words more
+				if (n > 4){
+					acc += n * 2;
+				} else {
+					acc += 1;
+				}
 			}
 			// System.err.println(plainText.substring(i)+" - "+trie.containsBeginning(plainText.substring(i)));
 		}
