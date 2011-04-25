@@ -1,9 +1,7 @@
-package alphabet;
+package basic;
 
 import java.util.Random;
 import java.util.Scanner;
-
-import basic.MonoCipher;
 
 public class MonoDriver {
 
@@ -20,29 +18,30 @@ public class MonoDriver {
 		
 		String cipherText = "PGDAH EINPE MACAT AFZEM XQHAM AUEPQ HAIGD JRQAM JMGTM EDQHE QZAQA MDOFA ZQHAD OFODR DEDGR FQGBQ ODAOQ QGGNQ GIGSA MQHAA FQOMA FAUXG MNIOQ XPRLU EXPXP QADEB QAMQH AJMGT MEDUE PUMOQ QAFEL RFIHG BDOQH EINAM PEIQR ECCXU AFQQG FAUXG MNEFZ QMOAZ OQGRQ NEQOA HEBFA MOFIX LAMJR FNPGD ATAAN PEMAW RPQTA ANOAM QHEFG QHAMP";
 		
-		Fitness fitness = new Fitness("/home/peterw/Projects/Eclipse/GeneticCrack/top1000.txt",new MonoCipher(),cipherText);
+		Fitness fitness = new MonoFitness("/home/peterw/Projects/Eclipse/GeneticCrack/top1000.txt",new MonoCipher(),cipherText);
 		
-		Mono population = new Mono(5000,fitness);
+		MonoEvaluator eval = new MonoEvaluator(fitness);
+		
+		Population population = new Population(4000, eval);
 
 		Random rand = new Random();
 		
-		MonoGeneTool geneTool = new MonoGeneTool(rand);
+		// our evaluator was a good place for these almost static methods
+		GeneTool geneTool = eval;
 		
-		MonoManipulator manipulator = new MonoManipulator(rand);
+		Overlord overlord = new Overlord(population, eval, geneTool);
 		
-		Overlord overlord = new Overlord(population, geneTool, manipulator);
-		
-		//while(!overlord.isDone()){
-		for (int i=0; i<1000; i++){
+		for (int i=0; i<20000; i++){
 			//System.err.println("running a generation...");
 			int ret = overlord.runGeneration();
 			
-			// TODO debugging
-			if (ret >= 350){
-				System.err.println();
+			// TODO lets save our progress every 50 generations
+			if (i % 50 == 0) {
+				population.savePopulation("population"+i+"_"+ret+".txt");
 			}
+			
+			System.err.println(i+" "+ret);
 		}
-		//}
 		
 	}
 

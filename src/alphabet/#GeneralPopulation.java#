@@ -1,0 +1,12 @@
+package alphabet;
+
+import java.util.ArrayList;
+
+public class GeneralPopulation {
+
+    ArrayList<MonoCandidate> list;
+    GeneralPopulation(int size){
+        this.list = new ArrayList<MonoCandidate>
+            }
+    
+}

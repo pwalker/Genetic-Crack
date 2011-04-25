@@ -28,6 +28,10 @@ public class MonoCandidate implements Comparable<MonoCandidate> {
 		this(f, MonoCandidate.randomAlphabet());
 	}
 
+	public MonoCandidate(String next) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public static String randomAlphabet() {
 		// TODO random!
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";

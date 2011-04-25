@@ -1,11 +1,8 @@
-package alphabet;
+package basic;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
-import basic.MonoCipher;
-import basic.Trie;
 
 /**
  * 
@@ -16,7 +13,7 @@ import basic.Trie;
  * 
  */
 
-public class Fitness {
+public class MonoFitness extends Fitness {
 
 	private static Trie trie;
 
@@ -24,7 +21,7 @@ public class Fitness {
 
 	private MonoCipher cipher;
 	
-	public Fitness(MonoCipher c, String cText) {
+	public MonoFitness(MonoCipher c, String cText) {
 		this("/usr/share/dict/words",c,cText);
 	}
 	
@@ -34,11 +31,11 @@ public class Fitness {
 	 * 
 	 * @param dictionary
 	 */
-	public Fitness(String dictionary, MonoCipher c, String cText) {
+	public MonoFitness(String dictionary, MonoCipher c, String cText) {
 		this.cipherText = cText;
 		this.cipher = c;
 		
-		Fitness.trie = new Trie();
+		MonoFitness.trie = new Trie();
 
 		File file = new File(dictionary);
 
@@ -51,7 +48,7 @@ public class Fitness {
 				
 				// we don't want to add the letters
 				if (word.length() > 3){
-					Fitness.trie.add(word);
+					MonoFitness.trie.add(word);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -68,8 +65,8 @@ public class Fitness {
 	 * @param plaintext
 	 * @return
 	 */
-	public int fitness(String dna) {
-		String plainText = this.cipher.decrypt(dna, this.cipherText);
+	public int fitness(Candidate c) {
+		String plainText = this.cipher.decrypt(c.getGenes(), this.cipherText);
 		
 		int acc = 0;
 		

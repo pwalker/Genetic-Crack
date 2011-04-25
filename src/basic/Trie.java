@@ -1,4 +1,4 @@
-package alphabet;
+package basic;
 
 import java.util.HashMap;
 
