@@ -17,8 +17,9 @@ public class Population {
 	private Comparator<Candidate> comparator;
 	
 	private LinkedBlockingQueue<Candidate> work;
+	private EvalBarrier barrier;
 
-	Population(int size, Comparator<Candidate> comp) {
+	Population(int size, Comparator<Candidate> comp, EvalBarrier b) {
 		this.popSize = size;
 
 		// make our ArrayList, to size
@@ -33,6 +34,8 @@ public class Population {
 		}
 		
 		this.work = new LinkedBlockingQueue<Candidate>();
+		
+		this.barrier = b;
 	}
 
 	private void add(Candidate c) {
@@ -187,6 +190,7 @@ public class Population {
 		Random r = new Random();
 		while (retVal.size() <= n) {
 			int rand = r.nextInt(totalFit);
+			
 			throwDart: for (Candidate c : this.list) {
 				// did we land on the right one?
 				if (rand < c.getFitness()) {
@@ -206,12 +210,18 @@ public class Population {
 	private void evaluateCandidates() {
 		// put candidates in the queue!
 		try {
-			this.queueCandidates(this.list);
+			// figure out what we are doing
+			ArrayList<Candidate> queue = this.queueCandidates(this.list);
 			
-			// TODO how to wait for queue to be empty?
-			while (this.work.size() > 0) {
-				this.work.wait();
+			this.barrier.reset(queue.size());
+			
+			// generate our work
+			for (Candidate c :  queue){
+				this.work.put(c);
 			}
+			
+			// wait till the queue gets done
+			this.barrier.pause();		
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -221,12 +231,14 @@ public class Population {
 		
 	}
 
-	private void queueCandidates(ArrayList<Candidate> incoming) throws InterruptedException {
+	private ArrayList<Candidate> queueCandidates(ArrayList<Candidate> incoming) throws InterruptedException {
+		ArrayList<Candidate> acc = new ArrayList<Candidate>();
 		for (Candidate c : incoming) {
 			if (c.getFitness() < 0) {
-				this.work.put(c);
+				acc.add(c);
 			}
 		}
+		return acc;
 	}
 
 }

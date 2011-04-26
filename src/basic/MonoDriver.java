@@ -18,18 +18,21 @@ public class MonoDriver {
 		
 		String cipherText = "PGDAH EINPE MACAT AFZEM XQHAM AUEPQ HAIGD JRQAM JMGTM EDQHE QZAQA MDOFA ZQHAD OFODR DEDGR FQGBQ ODAOQ QGGNQ GIGSA MQHAA FQOMA FAUXG MNIOQ XPRLU EXPXP QADEB QAMQH AJMGT MEDUE PUMOQ QAFEL RFIHG BDOQH EINAM PEIQR ECCXU AFQQG FAUXG MNEFZ QMOAZ OQGRQ NEQOA HEBFA MOFIX LAMJR FNPGD ATAAN PEMAW RPQTA ANOAM QHEFG QHAMP";
 		
-		Fitness fitness = new MonoFitness("/home/peterw/Projects/Eclipse/GeneticCrack/top1000.txt",new MonoCipher(),cipherText);
+		Fitness fitness = new MonoFitness("top1000.txt",new MonoCipher(),cipherText);
 		
 		MonoEvaluator eval = new MonoEvaluator(fitness);
 		
-		Population population = new Population(4000, eval);
+		// setup our threadpool barrier
+		EvalBarrier b = new EvalBarrier();
+		
+		Population population = new Population(10000, eval, b);
 
 		Random rand = new Random();
 		
 		// our evaluator was a good place for these almost static methods
 		GeneTool geneTool = eval;
 		
-		Overlord overlord = new Overlord(population, eval, geneTool, 4);
+		Overlord overlord = new Overlord(population, eval, geneTool, b, 12);
 		
 		for (int i=0; i<20000; i++){
 			//System.err.println("running a generation...");

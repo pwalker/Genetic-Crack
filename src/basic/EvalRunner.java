@@ -2,15 +2,17 @@ package basic;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class EvalRunner implements Runnable {
+public class EvalRunner extends Thread {
 
 	private Evaluator eval;
 	private LinkedBlockingQueue<Candidate> work;
+	private EvalBarrier barrier;
 	
-	EvalRunner (Evaluator eval, LinkedBlockingQueue<Candidate> work) {
+	EvalRunner (Evaluator eval, LinkedBlockingQueue<Candidate> work, EvalBarrier barrier) {
 		this.work = work;
 		// TODO do I need to make a copy of the fittor?
 		this.eval = eval;
+		this.barrier = barrier;
 	}
 	
 	@Override
@@ -24,8 +26,8 @@ public class EvalRunner implements Runnable {
 				// do the work
 				this.eval.evaluate(next);
 				
-				// let people know
-				work.notifyAll();
+				// increment our barrier
+				this.barrier.inc();
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

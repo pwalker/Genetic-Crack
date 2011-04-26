@@ -56,7 +56,7 @@ public class MonoEvaluator implements GeneTool, Evaluator {
 	 */
 	@Override
 	public void mutate(Candidate c) {
-		this.mutate(c, .2);
+		this.mutate(c, .5);
 	}
 
 	/* (non-Javadoc)

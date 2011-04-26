@@ -8,20 +8,23 @@ public class Overlord {
 	private Population population;
 	private Evaluator eval;
 	private EvalRunner[] runners;
-	private Thread[] threads;
+	private EvalBarrier barrier;
+	//private Thread[] threads;
 	
-	public Overlord(Population population, Evaluator eval, GeneTool geneTool, int threads) {
+	public Overlord(Population population, Evaluator eval, GeneTool geneTool, EvalBarrier b, int threads) {
 		this.geneTool = geneTool;
 		this.population = population;
 		this.eval = eval;
+		this.barrier = b;
 		
+		// TODO should this be in MonoDriver?
 		// create our worker threads
 		this.runners = new EvalRunner[threads];
-		this.threads = new Thread[threads];
+		//this.threads = new Thread[threads];
 		for (int i=0; i<threads; i++) {
-			this.runners[i] = new EvalRunner(this.eval, this.population.getWorkQueue());
-			this.threads[i] = new Thread(this.runners[i]);
-			this.threads[i].start();
+			this.runners[i] = new EvalRunner(this.eval, this.population.getWorkQueue(), this.barrier);
+			//this.threads[i] = new Thread(this.runners[i]);
+			this.runners[i].start();
 		}
 		
 	}
@@ -39,7 +42,7 @@ public class Overlord {
 		this.population.crossoverFill(this.geneTool);
 		
 		// Apply some random mutations!
-		this.population.mutate(this.geneTool, .1);
+		this.population.mutate(this.geneTool, .3);
 	
 		// lets get something to return
 		// which is the fitness of the last element in the list, which should be the most fit candidate
