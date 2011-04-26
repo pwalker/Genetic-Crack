@@ -8,12 +8,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Population {
 
 	private int popSize;
 	private ArrayList<Candidate> list;
 	private Comparator<Candidate> comparator;
+	
+	private LinkedBlockingQueue<Candidate> work;
 
 	Population(int size, Comparator<Candidate> comp) {
 		this.popSize = size;
@@ -28,6 +31,8 @@ public class Population {
 		for (int i = 0; i < this.popSize; i++) {
 			this.list.add(new MonoCandidate());
 		}
+		
+		this.work = new LinkedBlockingQueue<Candidate>();
 	}
 
 	private void add(Candidate c) {
@@ -35,8 +40,12 @@ public class Population {
 
 		this.list.add(c);
 	}
+	
+	public LinkedBlockingQueue<Candidate> getWorkQueue() {
+		return this.work;
+	}
 
-	public void crossoverFill(GeneTool geneTool) {
+	public void crossoverFill(GeneTool geneTool) throws Exception {
 		// make a new population list to replace the current one, picking in a
 		// method similar to select (where larger fitness means larger
 		// probability of selection)
@@ -65,6 +74,7 @@ public class Population {
 		return this.popSize;
 	}
 
+	// TODO these methods should be elsewhere
 	public void loadPopulation(String file) {
 		// get rid of our current population
 		this.list.clear();
@@ -90,7 +100,7 @@ public class Population {
 		this.list.trimToSize();
 	}
 
-	public void mutate(GeneTool geneTool, double percent) {
+	public void mutate(GeneTool geneTool, double percent) throws Exception {
 		// how many do we want?
 		int n = (int) Math.floor(this.list.size() * percent);
 
@@ -105,7 +115,8 @@ public class Population {
 
 	public void savePopulation(String file) {
 		// sort things so we are guaranteed a fitness
-		Collections.sort(this.list);
+		//Collections.sort(this.list);
+		this.evaluateCandidates();
 		
 		// try and open the file
 		try {
@@ -124,7 +135,7 @@ public class Population {
 		}
 	}
 
-	public void select(double percent) {
+	public void select(double percent) throws Exception {
 		// lets sort our list
 		// this.sortCandidates();
 		// TODO I don't think we need to sort anything
@@ -144,17 +155,26 @@ public class Population {
 	}
 
 	public ArrayList<Candidate> sortCandidates() {
+		// give them all a fitness
+		this.evaluateCandidates();
+		
 		Collections.sort(this.list, this.comparator);
 		return this.list;
 	}
 
-	private ArrayList<Candidate> throwDarts(int n) {
+	private ArrayList<Candidate> throwDarts(int n) throws Exception {
 		// Let's sort the list, so we candidates have valid fitness numbers
-		Collections.sort(this.list);
+		//Collections.sort(this.list);
+		// Lets add all the Candidate's with no fitness numbers to the queue, I think we need to block on this
+		this.evaluateCandidates();	
 
 		// lets get the total fitness
 		int totalFit = 0;
 		for (Candidate c : this.list) {
+			// lets make sure it all works right.
+			if (c.getFitness() < 0) {
+				throw new Exception("Not all candidates have been evaluated");
+			}
 			totalFit += Math.max(c.getFitness(), 1);
 			//totalFit += c.getFitness()+1;
 		}
@@ -181,6 +201,32 @@ public class Population {
 		}
 
 		return retVal;
+	}
+
+	private void evaluateCandidates() {
+		// put candidates in the queue!
+		try {
+			this.queueCandidates(this.list);
+			
+			// TODO how to wait for queue to be empty?
+			while (this.work.size() > 0) {
+				this.work.wait();
+			}
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	private void queueCandidates(ArrayList<Candidate> incoming) throws InterruptedException {
+		for (Candidate c : incoming) {
+			if (c.getFitness() < 0) {
+				this.work.put(c);
+			}
+		}
 	}
 
 }

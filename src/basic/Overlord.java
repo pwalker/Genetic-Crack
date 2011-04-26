@@ -6,18 +6,32 @@ public class Overlord {
 
 	private GeneTool geneTool;
 	private Population population;
-	private Comparator<Candidate> eval;
+	private Evaluator eval;
+	private EvalRunner[] runners;
+	private Thread[] threads;
 	
-	public Overlord(Population population, Comparator<Candidate> eval, GeneTool geneTool) {
+	public Overlord(Population population, Evaluator eval, GeneTool geneTool, int threads) {
 		this.geneTool = geneTool;
 		this.population = population;
 		this.eval = eval;
+		
+		// create our worker threads
+		this.runners = new EvalRunner[threads];
+		this.threads = new Thread[threads];
+		for (int i=0; i<threads; i++) {
+			this.runners[i] = new EvalRunner(this.eval, this.population.getWorkQueue());
+			this.threads[i] = new Thread(this.runners[i]);
+			this.threads[i].start();
+		}
+		
 	}
 	
 	/**
 	 * Do the steps necessary for a generic Genetic algorithm generation
+	 * @throws Exception 
+	 * TODO I might want to handle this exception here
 	 */
-	public int runGeneration(){
+	public int runGeneration() throws Exception{
 		// Select the members of the population as candidates for reproduction
 		this.population.select(.8);
 		

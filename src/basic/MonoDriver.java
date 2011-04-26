@@ -29,18 +29,23 @@ public class MonoDriver {
 		// our evaluator was a good place for these almost static methods
 		GeneTool geneTool = eval;
 		
-		Overlord overlord = new Overlord(population, eval, geneTool);
+		Overlord overlord = new Overlord(population, eval, geneTool, 4);
 		
 		for (int i=0; i<20000; i++){
 			//System.err.println("running a generation...");
-			int ret = overlord.runGeneration();
-			
-			// TODO lets save our progress every 50 generations
-			if (i % 50 == 0) {
-				population.savePopulation("population"+i+"_"+ret+".txt");
+			int ret;
+			try {
+				ret = overlord.runGeneration();
+				// TODO lets save our progress every 50 generations
+				if (i % 200 == 0) {
+					population.savePopulation("population"+i+".txt");
+				}
+				
+				System.err.println(i+" "+ret);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-			System.err.println(i+" "+ret);
 		}
 		
 	}

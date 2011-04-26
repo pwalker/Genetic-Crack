@@ -1,9 +1,8 @@
 package basic;
 
-import java.util.Comparator;
 import java.util.Random;
 
-public class MonoEvaluator implements Comparator<Candidate>, GeneTool {
+public class MonoEvaluator implements GeneTool, Evaluator {
 
 	private Fitness fittor;
 	private Random r;
@@ -40,7 +39,11 @@ public class MonoEvaluator implements Comparator<Candidate>, GeneTool {
 		return c1.getFitness() - c2.getFitness();
 	}
 
-	private void evaluate(MonoCandidate c1) {
+	/* (non-Javadoc)
+	 * @see basic.Evaluator#evaluate(basic.MonoCandidate)
+	 */
+	@Override
+	public void evaluate(Candidate c1) {
 		// compute the fitness
 		int score = this.fittor.fitness(c1);
 		
