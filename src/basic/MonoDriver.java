@@ -16,16 +16,19 @@ public class MonoDriver {
 			plainText += s.nextLine();
 		}*/
 		
-		String cipherText = "PGDAH EINPE MACAT AFZEM XQHAM AUEPQ HAIGD JRQAM JMGTM EDQHE QZAQA MDOFA ZQHAD OFODR DEDGR FQGBQ ODAOQ QGGNQ GIGSA MQHAA FQOMA FAUXG MNIOQ XPRLU EXPXP QADEB QAMQH AJMGT MEDUE PUMOQ QAFEL RFIHG BDOQH EINAM PEIQR ECCXU AFQQG FAUXG MNEFZ QMOAZ OQGRQ NEQOA HEBFA MOFIX LAMJR FNPGD ATAAN PEMAW RPQTA ANOAM QHEFG QHAMP";
+		//String cipherText = "PGDAH EINPE MACAT AFZEM XQHAM AUEPQ HAIGD JRQAM JMGTM EDQHE QZAQA MDOFA ZQHAD OFODR DEDGR FQGBQ ODAOQ QGGNQ GIGSA MQHAA FQOMA FAUXG MNIOQ XPRLU EXPXP QADEB QAMQH AJMGT MEDUE PUMOQ QAFEL RFIHG BDOQH EINAM PEIQR ECCXU AFQQG FAUXG MNEFZ QMOAZ OQGRQ NEQOA HEBFA MOFIX LAMJR FNPGD ATAAN PEMAW RPQTA ANOAM QHEFG QHAMP";
+		String cipherText = "UGBCR MUNAE RRDMR NPRAI GKMGC RUGQK MSDMS BRDFR VSPUU SMBGD OPUSD ENFYF QKTRA GTRKN FURCS FNBTR MMRBS DVUSF UURVN MEKRV SDONH NKPSF QBNKB XCNBG AGKGQ MHKGA QFPUS MURNA VNMMQ DYQHG DUSME KRNMP NDAUR BGGYR AIKGC CXHGS DPGIT SRVBS YRNMP KNDOR BNDYE SKAVS PUAQB BOKNX HBQCN ORNDA NEBNF YPGHY DGP";
+		// this should be 208 with words.txt
+		// 94 with top1000
 		
-		Fitness fitness = new MonoFitness("top1000.txt",new MonoCipher(),cipherText);
+		Fitness fitness = new MonoFitness("words.txt",new MonoCipher(),cipherText);
 		
 		MonoEvaluator eval = new MonoEvaluator(fitness);
 		
 		// setup our threadpool barrier
 		EvalBarrier b = new EvalBarrier();
 		
-		Population population = new Population(10000, eval, b);
+		Population population = new Population(5000, eval, b);
 
 		Random rand = new Random();
 		
@@ -40,8 +43,8 @@ public class MonoDriver {
 			try {
 				ret = overlord.runGeneration();
 				// TODO lets save our progress every 50 generations
-				if (i % 200 == 0) {
-					population.savePopulation("population"+i+".txt");
+				if (i % 50 == 0) {
+					population.savePopulation("population"+i+".csv");
 				}
 				
 				System.err.println(i+" "+ret);

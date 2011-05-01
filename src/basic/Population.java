@@ -128,8 +128,10 @@ public class Population {
 
 			PrintWriter out = new PrintWriter(output);
 
+			out.println("Genes,fitness");
+			
 			for (Candidate c : this.list) {
-				out.println(c.getGenes()+" "+c.getFitness());
+				out.println(c.getGenes()+","+c.getFitness());
 			}
 
 			out.close();
@@ -178,8 +180,9 @@ public class Population {
 			if (c.getFitness() < 0) {
 				throw new Exception("Not all candidates have been evaluated");
 			}
-			totalFit += Math.max(c.getFitness(), 1);
+			//totalFit += Math.max(c.getFitness(), 1);
 			//totalFit += c.getFitness()+1;
+			totalFit += c.getFitness();
 		}
 
 		// setup our new population
@@ -199,8 +202,9 @@ public class Population {
 				}
 
 				// skip to the next wheel position.
-				rand = rand - Math.max(c.getFitness(), 1);
+				//rand = rand - Math.max(c.getFitness(), 1);
 				//rand = rand - c.getFitness() + 1;
+				rand = rand - c.getFitness();
 			}
 		}
 
