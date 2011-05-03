@@ -1,7 +1,13 @@
-package basic;
+package mono;
 
 import java.util.Random;
 import java.util.Scanner;
+
+import basic.EvalBarrier;
+import basic.Fitness;
+import basic.GeneTool;
+import basic.Overlord;
+import basic.Population;
 
 public class MonoDriver {
 
@@ -30,6 +36,8 @@ public class MonoDriver {
 		
 		Population population = new Population(5000, eval, b);
 
+		TODO see the population!
+		
 		Random rand = new Random();
 		
 		// our evaluator was a good place for these almost static methods

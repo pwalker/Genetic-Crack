@@ -1,6 +1,6 @@
 package alphabet;
 
-import basic.MonoCipher;
+import mono.MonoCipher;
 
 public class DebugStuff {
 

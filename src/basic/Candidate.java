@@ -18,7 +18,7 @@ public class Candidate implements Comparable<Candidate> {
 		this.genes = genes;
 		this.fitness = -1;
 	}
-
+	
 	public int compareTo(Candidate other) {
 		return this.fitness - other.getFitness();
 	}

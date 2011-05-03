@@ -1,7 +1,9 @@
-package basic;
+package mono;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import basic.Candidate;
 
 public class MonoCandidate extends Candidate {
 

@@ -1,6 +1,11 @@
-package basic;
+package mono;
 
 import java.util.Random;
+
+import basic.Candidate;
+import basic.Evaluator;
+import basic.Fitness;
+import basic.GeneTool;
 
 public class MonoEvaluator implements GeneTool, Evaluator {
 

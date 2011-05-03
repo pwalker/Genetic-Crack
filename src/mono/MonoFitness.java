@@ -1,4 +1,4 @@
-package basic;
+package mono;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
+
+import basic.Candidate;
+import basic.Fitness;
+import basic.Trie;
 
 /**
  * 

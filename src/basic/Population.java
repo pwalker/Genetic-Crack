@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import mono.MonoCandidate;
+
 public class Population {
 
 	private int popSize;
@@ -19,7 +21,7 @@ public class Population {
 	private LinkedBlockingQueue<Candidate> work;
 	private EvalBarrier barrier;
 
-	Population(int size, Comparator<Candidate> comp, EvalBarrier b) {
+	public Population(int size, Comparator<Candidate> comp, EvalBarrier b) {
 		this.popSize = size;
 
 		// make our ArrayList, to size
@@ -27,11 +29,6 @@ public class Population {
 		this.list.ensureCapacity(size);
 
 		this.comparator = comp;
-
-		// lets now initialize the population
-		for (int i = 0; i < this.popSize; i++) {
-			this.list.add(new MonoCandidate());
-		}
 		
 		this.work = new LinkedBlockingQueue<Candidate>();
 		

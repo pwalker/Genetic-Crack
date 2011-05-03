@@ -3,7 +3,8 @@ package alphabet;
 import java.util.Random;
 import java.util.Scanner;
 
-import basic.MonoCipher;
+import mono.MonoCipher;
+
 
 public class MonoDriver {
 

@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import basic.MonoCipher;
+import mono.MonoCipher;
+
 import basic.Trie;
 
 /**

@@ -1,5 +1,9 @@
 package basic;
 
+import mono.MonoCandidate;
+import mono.MonoCipher;
+import mono.MonoFitness;
+
 public class DebugFitness {
 
 	/**
