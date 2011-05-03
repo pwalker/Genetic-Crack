@@ -65,19 +65,27 @@ public class MonoFitness extends Fitness {
 	}
 
 
-	public int fitness(Candidate c) {
-		int acc = 0;
+	public int fitness(Candidate cand) {
+		// We should only be evaluating MonoCandidates
+		if (cand instanceof MonoCandidate){
+			MonoCandidate c = (MonoCandidate) cand;
 		
-		// does the plaintext contain any words?
-		acc += wordCount(c);
+			int acc = 0;
+			
+			// does the plaintext contain any words?
+			acc += wordCount(c);
+			
+			// how well do the frequencies line up with what's expected?
+			acc += freqAnalyze(c);
+			
+			return acc;
+		}
 		
-		// how well do the frequencies line up with what's expected?
-		acc += freqAnalyze(c);
-		
-		return acc;
+		// return the error fitness
+		return -1;
 	}
 	
-	private int freqAnalyze(Candidate c) {
+	private int freqAnalyze(MonoCandidate c) {
 		// Here is the expected order of the alphabet by frequency according to Wikipedia
 		String freq = "etaoinshrdlcumwfqypbvkjxqz";
 		
@@ -98,7 +106,7 @@ public class MonoFitness extends Fitness {
 		return acc;
 	}
 
-	private String freqString(Candidate c) {
+	private String freqString(MonoCandidate c) {
 		// load the plaintext
 		String plainText = this.cipher.decrypt(c.getGenes(), this.cipherText);
 		
@@ -160,7 +168,7 @@ public class MonoFitness extends Fitness {
 	 * @param plaintext
 	 * @return
 	 */
-	public int wordCount(Candidate c) {
+	public int wordCount(MonoCandidate c) {
 		String plainText = this.cipher.decrypt(c.getGenes(), this.cipherText);
 		
 		int acc = 0;

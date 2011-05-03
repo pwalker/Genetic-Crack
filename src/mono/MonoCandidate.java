@@ -7,13 +7,17 @@ import basic.Candidate;
 
 public class MonoCandidate extends Candidate {
 
+	protected String genes;
+	
 	public MonoCandidate(String genes) {
-		super(genes);
+		super();
+		this.genes = genes;
 	}
 
 	// The random contructor!
 	public MonoCandidate() {
-		super(MonoCandidate.randomAlphabet());
+		super();
+		this.genes = MonoCandidate.randomAlphabet();
 	}
 	
 	public static String randomAlphabet() {
@@ -31,8 +35,26 @@ public class MonoCandidate extends Candidate {
 		return newCand;
 	}
 
+	@Override
 	public MonoCandidate copy() {
 		return new MonoCandidate(this.getGenes().toString());
 	}
 	
+	public String getGenes() {
+		return genes;
+	}
+
+	public void setGenes(String str) {
+		if (!this.genes.equals(str)){
+			// since the genes aren't the same, this is outdated.
+			this.fitness = -1;
+		}
+		this.genes = str;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

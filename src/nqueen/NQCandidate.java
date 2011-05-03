@@ -6,44 +6,52 @@ import java.util.Random;
 import basic.Candidate;
 
 public class NQCandidate extends Candidate {
-
-	public static final int N = 25;
 	
 	private int[] genes;
 	
 	public NQCandidate(int[] genes) {
-		super("haha");
+		super();
 		this.genes = genes;
 	}
 
 	// The random contructor!
 	public NQCandidate() {
-		super("haha");
+		super();
 		this.genes = NQCandidate.randomGenes();
 	}
 	
 	private static int[] randomGenes() {
-		int[] retVal = new int[NQCandidate.N];
+		int[] retVal = new int[Config.N];
 		Random r = new Random();
 		for (int i = 0; i < retVal.length; i++){
-			retVal[i] = r.nextInt(NQCandidate.N);
+			retVal[i] = r.nextInt(Config.N);
 		}
 		return retVal;
 	}
 
-	@Override
 	public String getGenes(){
-		return null;
-		
+		// TODO
+		return "TODO";
 	}
 	
-	@Override
-	public void setGenes(){
-		
+	public int[] toArray(){
+		return this.genes;
 	}
 	
 	public NQCandidate copy() {
 		return new NQCandidate(Arrays.copyOf(this.genes, this.genes.length));
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setGenes(String genes) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

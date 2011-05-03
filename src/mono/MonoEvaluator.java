@@ -69,7 +69,14 @@ public class MonoEvaluator implements GeneTool, Evaluator {
 	 */
 	@Override
 	public void mutate(Candidate c, double threshold) {
+		if (c instanceof MonoCandidate){
+			mutate((MonoCandidate) c, threshold);
+		} else {
+			throw new UnsupportedOperationException("This evaluate can only evaluate a MonoCandidate");
+		}
+	}
 
+	public void mutate(MonoCandidate c, double threshold) {
 		// copy the string
 		String retVal = new String(c.getGenes().toCharArray());
 
@@ -122,7 +129,12 @@ public class MonoEvaluator implements GeneTool, Evaluator {
 	 */
 	@Override
 	public void cross(Candidate c1, Candidate c2, double threshold) {
+		if (c1 instanceof MonoCandidate && c2 instanceof MonoCandidate){
+			this.cross((MonoCandidate) c1, (MonoCandidate) c2, threshold);
+		}
+	}
 
+	public void cross(MonoCandidate c1, MonoCandidate c2, double threshold){
 		// copy the string
 		String ret1 = new String(c1.getGenes().toCharArray());
 		String ret2 = new String(c2.getGenes().toCharArray());

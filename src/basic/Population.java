@@ -1,16 +1,11 @@
 package basic;
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import mono.MonoCandidate;
 
 public class Population {
 
@@ -35,7 +30,7 @@ public class Population {
 		this.barrier = b;
 	}
 
-	private void add(Candidate c) {
+	public void add(Candidate c) {
 		// TODO check to make sure we don't go over size!
 
 		this.list.add(c);
@@ -75,6 +70,7 @@ public class Population {
 	}
 
 	// TODO these methods should be elsewhere
+	/*
 	public void loadPopulation(String file) {
 		// get rid of our current population
 		this.list.clear();
@@ -99,6 +95,7 @@ public class Population {
 
 		this.list.trimToSize();
 	}
+	*/
 
 	public void mutate(GeneTool geneTool, double percent) throws Exception {
 		// how many do we want?
@@ -113,6 +110,7 @@ public class Population {
 
 	}
 
+	/*
 	public void savePopulation(String file) {
 		// sort things so we are guaranteed a fitness
 		//Collections.sort(this.list);
@@ -136,6 +134,7 @@ public class Population {
 		} catch (Exception e) {
 		}
 	}
+	*/
 
 	public void select(double percent) throws Exception {
 		// lets sort our list

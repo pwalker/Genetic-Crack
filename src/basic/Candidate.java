@@ -7,15 +7,12 @@ package basic;
  * 
  */
 
-public class Candidate implements Comparable<Candidate> {
+public abstract class Candidate implements Comparable<Candidate> {
 
-	private String genes;
-	
 	// this is a cached value!
-	private int fitness;
+	protected int fitness;
 	
-	public Candidate(String genes) {
-		this.genes = genes;
+	public Candidate() {
 		this.fitness = -1;
 	}
 	
@@ -23,16 +20,10 @@ public class Candidate implements Comparable<Candidate> {
 		return this.fitness - other.getFitness();
 	}
 
-	public Candidate copy() {
-		return new Candidate(this.genes.toString());
-	}
+	public abstract Candidate copy();
 
 	public int getFitness() {
 		return fitness;
-	}
-
-	public String getGenes() {
-		return genes;
 	}
 	
 	public boolean hasFitness(){
@@ -43,16 +34,7 @@ public class Candidate implements Comparable<Candidate> {
 		this.fitness = fitness;
 	}
 
-	public void setGenes(String str) {
-		if (!this.genes.equals(str)){
-			// since the genes aren't the same, this is outdated.
-			this.fitness = -1;
-		}
-		this.genes = str;
-	}
-
-	public String toString(){
-		return this.genes;
-	}
+	public abstract String toString();
 	
+	public abstract void setGenes(String genes);
 }

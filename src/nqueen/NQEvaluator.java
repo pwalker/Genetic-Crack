@@ -4,75 +4,104 @@ import java.util.Random;
 
 import basic.Candidate;
 import basic.Evaluator;
+import basic.Fitness;
 import basic.GeneTool;
 
 public class NQEvaluator implements Evaluator, GeneTool {
 
 	private Random random;
+	private Fitness fittor;
 
-	NQEvaluator(){
+	NQEvaluator(Fitness f) {
+		this.fittor = f;
 		this.random = new Random();
 	}
-	
+
 	@Override
 	public int compare(Candidate o1, Candidate o2) {
-		if (o1 instanceof NQCandidate && o2 instanceof NQCandidate){
+		if (o1 instanceof NQCandidate && o2 instanceof NQCandidate) {
 			return this.compare((NQCandidate) o1, (NQCandidate) o2);
 		}
 		System.err.println("NQEvaluator.compare(): Casting didn't work!");
 		return -1;
 	}
-	
+
 	// TODO code is the same as in MonoEvaluator
-	public int compare(NQCandidate c1, NQCandidate c2){
+	public int compare(NQCandidate c1, NQCandidate c2) {
 		// Let's make sure we can actually compare the candidates
-		if (!c1.hasFitness()){
+		if (!c1.hasFitness()) {
 			this.evaluate(c1);
 		}
-		if (!c2.hasFitness()){
+		if (!c2.hasFitness()) {
 			this.evaluate(c2);
 		}
-		
+
 		return c1.getFitness() - c2.getFitness();
 	}
 
 	@Override
 	public void mutate(Candidate c) {
-		// TODO make this amount configurable, maybe just with a configuration class with a bunch of static finals
-		mutate(c, .3);
+		mutate(c, Config.MUTATE_THRESHOLD);
 	}
 
 	@Override
 	public void mutate(Candidate c, double percent) {
+		if (c instanceof NQCandidate) {
+			mutate((NQCandidate) c, percent);
+		} else {
+			throw new UnsupportedOperationException(
+					"This evaluate can only evaluate a MonoCandidate");
+		}
+	}
+
+	public void mutate(NQCandidate c, double percent) {
 		// figure out our n
-		int n = (int) Math.ceil(c.getGenes().length() * percent);
-		
+		int n = (int) Math.ceil(Config.N * percent);
+
 		// Get a random number
 		int mutations = this.random.nextInt(n);
-		
-		char[] chars = c.getGenes().toCharArray();
-		for (int i=0; i < mutations; i++){
-			int r = this.random.nextInt(c.getGenes().length());
-			chars[r] = this.random.nextInt(c.getGenes().length());
+
+		int[] ints = c.toArray();
+		for (int i = 0; i < mutations; i++) {
+			int r = this.random.nextInt(Config.N);
+			ints[r] = this.random.nextInt(Config.N);
 		}
 	}
 
 	@Override
 	public void cross(Candidate c1, Candidate c2) {
-		// TODO Auto-generated method stub
-
+		this.cross(c1, c2, Config.CROSS_THRESHOLD);
 	}
 
 	@Override
 	public void cross(Candidate c1, Candidate c2, double percent) {
-		// TODO Auto-generated method stub
-
+		if (c1 instanceof NQCandidate && c2 instanceof NQCandidate) {
+			this.cross((NQCandidate) c1, (NQCandidate) c2, percent);
+		}
 	}
 
+	public void cross(NQCandidate c1, NQCandidate c2, double threshold) {
+		// lets pick a point, and then swap halves
+		int swapPoint = this.random.nextInt(Config.N);
+
+		// swap everything after that point
+		int[] c1arr = c1.toArray();
+		int[] c2arr = c2.toArray();
+		for (int i = swapPoint; i < Config.N; i++) {
+			int temp = c2arr[i];
+			c2arr[i] = c1arr[i];
+			c1arr[i] = temp;
+		}
+	}
+
+	// TODO same as in MonoEvaluator
 	@Override
 	public void evaluate(Candidate c1) {
-		// TODO Auto-generated method stub
-
+		// compute the fitness
+		int score = this.fittor.fitness(c1);
+		
+		// cache the score
+		c1.setFitness(score);
 	}
 
 }
