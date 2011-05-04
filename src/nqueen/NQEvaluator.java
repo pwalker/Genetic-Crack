@@ -66,6 +66,9 @@ public class NQEvaluator implements Evaluator, GeneTool {
 			int r = this.random.nextInt(Config.N);
 			ints[r] = this.random.nextInt(Config.N);
 		}
+		
+		// put it back
+		c.setGenes(ints);
 	}
 
 	@Override
@@ -92,6 +95,10 @@ public class NQEvaluator implements Evaluator, GeneTool {
 			c2arr[i] = c1arr[i];
 			c1arr[i] = temp;
 		}
+		
+		// put them back
+		c1.setGenes(c1arr);
+		c2.setGenes(c2arr);
 	}
 
 	// TODO same as in MonoEvaluator

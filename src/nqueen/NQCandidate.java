@@ -44,14 +44,22 @@ public class NQCandidate extends Candidate {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		String retVal = "";
+		for (int i : this.genes) {
+			retVal += i+" ";
+		}
+		return retVal.trim();
 	}
 
 	@Override
 	public void setGenes(String genes) {
 		// TODO Auto-generated method stub
-		
+		System.err.println("Don't do this!");
+	}
+
+	public void setGenes(int[] ints) {
+		this.genes = Arrays.copyOf(ints, ints.length);
+		this.fitness = -1;
 	}
 	
 }
