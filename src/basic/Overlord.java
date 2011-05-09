@@ -1,9 +1,5 @@
 package basic;
 
-import java.util.Comparator;
-
-import nqueen.NQCandidate;
-
 public class Overlord {
 
 	private GeneTool geneTool;
@@ -26,6 +22,7 @@ public class Overlord {
 		for (int i=0; i<threads; i++) {
 			this.runners[i] = new EvalRunner(this.eval, this.population.getWorkQueue(), this.barrier);
 			//this.threads[i] = new Thread(this.runners[i]);
+			this.runners[i].setDaemon(true);
 			this.runners[i].start();
 		}
 		

@@ -76,7 +76,7 @@ public class MonoFitness extends Fitness {
 			acc += wordCount(c);
 			
 			// how well do the frequencies line up with what's expected?
-			acc += freqAnalyze(c);
+			//acc += freqAnalyze(c);
 			
 			return acc;
 		}
@@ -203,6 +203,12 @@ public class MonoFitness extends Fitness {
 	public double quickFitness(String plaintext) {
 		// TODO
 		return 0.0;
+	}
+
+	@Override
+	public int maxFitness() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

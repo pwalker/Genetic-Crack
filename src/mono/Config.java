@@ -1,4 +1,4 @@
-package nqueen;
+package mono;
 
 public final class Config {
 
@@ -12,8 +12,8 @@ public final class Config {
 	
 	public static final double MUTATE_THRESHOLD = 1;
 
-	public static final int POPULATION_SIZE = 30;
+	public static final int POPULATION_SIZE = 2000;
 
-	public static final int GENERATIONS = 500;
+	public static final int GENERATIONS = 100000;
 	
 }

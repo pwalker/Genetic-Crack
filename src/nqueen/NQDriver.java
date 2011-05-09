@@ -42,13 +42,13 @@ public class NQDriver {
 		
 		PrintStream output = System.err;
 		
-		FileOutputStream f;
-		try {
-			f = new FileOutputStream("output.txt");
-			output = new PrintStream(f);
-		} catch (FileNotFoundException e1) {
-			
-		}
+//		FileOutputStream f;
+//		try {
+//			f = new FileOutputStream("output.txt");
+//			output = new PrintStream(f);
+//		} catch (FileNotFoundException e1) {
+//			
+//		}
 		
 		int max = 0;
 		int i;

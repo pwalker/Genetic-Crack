@@ -21,7 +21,6 @@ public class MonoCandidate extends Candidate {
 	}
 	
 	public static String randomAlphabet() {
-		// TODO random!
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";
 		ArrayList<Character> list = new ArrayList<Character>();
 		for (Character c : alphabet.toCharArray()) {
@@ -54,7 +53,6 @@ public class MonoCandidate extends Candidate {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getGenes();
 	}
 }
