@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import nqueen.NQCandidate;
+
 public class Population {
 
 	private int popSize;
@@ -51,7 +53,11 @@ public class Population {
 
 		// fill the population back up
 		int n = this.popSize - this.list.size();
-		this.list.addAll(this.throwDarts(n));
+		
+		// since we want duplicates, make some copies
+		for (Candidate c : this.throwDarts(n)){
+			this.list.add(c.copy());
+		}
 
 		// perform some crossovers
 		Collections.shuffle(this.list);
@@ -152,7 +158,8 @@ public class Population {
 
 		// fill it up
 		newList.addAll(throwDarts(n));
-
+		
+		this.list = newList;
 	}
 
 	public ArrayList<Candidate> sortCandidates() {
@@ -167,7 +174,9 @@ public class Population {
 		// Let's sort the list, so we candidates have valid fitness numbers
 		//Collections.sort(this.list);
 		// Lets add all the Candidate's with no fitness numbers to the queue, I think we need to block on this
-		this.evaluateCandidates();	
+		this.evaluateCandidates();
+		//mix them for random's sake
+		Collections.shuffle(this.list);
 
 		// lets get the total fitness
 		int totalFit = 0;
@@ -187,13 +196,14 @@ public class Population {
 
 		// throw some darts
 		Random r = new Random();
-		while (retVal.size() <= n) {
+		while (retVal.size() < n) {
 			int rand = r.nextInt(totalFit);
 			
 			throwDart: for (Candidate c : this.list) {
 				// did we land on the right one?
 				if (rand < c.getFitness()) {
-					retVal.add(c.copy());
+					//retVal.add(c.copy());
+					retVal.add(c);
 					break throwDart;
 				}
 
@@ -239,6 +249,30 @@ public class Population {
 			}
 		}
 		return acc;
+	}
+
+	public int totalFitness() {
+		// ensure that everyon has a fitness
+		this.evaluateCandidates();
+		
+		// sum them up!
+		int retVal = 0;
+		for (Candidate c : this.list){
+			retVal += c.getFitness();
+		}
+		return retVal;
+	}
+
+	public boolean containsFitness(int fit) {
+		// ensure we have some kind of ordering
+		this.evaluateCandidates();
+		
+		for (Candidate c : this.list) {
+			if (c.getFitness() >= fit){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

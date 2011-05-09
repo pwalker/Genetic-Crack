@@ -59,7 +59,7 @@ public class NQEvaluator implements Evaluator, GeneTool {
 		int n = (int) Math.ceil(Config.N * percent);
 
 		// Get a random number
-		int mutations = this.random.nextInt(n);
+		int mutations = this.random.nextInt(Config.N);
 
 		int[] ints = c.toArray();
 		for (int i = 0; i < mutations; i++) {
@@ -111,4 +111,8 @@ public class NQEvaluator implements Evaluator, GeneTool {
 		c1.setFitness(score);
 	}
 
+	public int maxFitness(){
+		return this.fittor.maxFitness();
+	}
+	
 }

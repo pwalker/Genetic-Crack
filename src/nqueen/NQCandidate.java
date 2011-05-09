@@ -2,6 +2,7 @@ package nqueen;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 import basic.Candidate;
 
@@ -20,6 +21,24 @@ public class NQCandidate extends Candidate {
 		this.genes = NQCandidate.randomGenes();
 	}
 	
+	public NQCandidate(String string) {
+		super();
+		String[] arr = string.split(" ");
+		if (arr.length != Config.N){
+			throw new UnsupportedOperationException("size mismatch");
+		}
+		int[] retval = new int[arr.length];
+		for (int i=0;i<retval.length;i++){
+			retval[i] = Integer.parseInt(arr[i]);
+		}
+		this.genes = retval;
+	}
+
+	public NQCandidate(int[] copyOf, int fitness) {
+		this(copyOf);
+		this.setFitness(fitness);
+	}
+
 	private static int[] randomGenes() {
 		int[] retVal = new int[Config.N];
 		Random r = new Random();
@@ -30,8 +49,11 @@ public class NQCandidate extends Candidate {
 	}
 
 	public String getGenes(){
-		// TODO
-		return "TODO";
+		String retVal = "";
+		for (int i : this.genes) {
+			retVal += i+" ";
+		}
+		return retVal.trim();
 	}
 	
 	public int[] toArray(){
@@ -39,16 +61,12 @@ public class NQCandidate extends Candidate {
 	}
 	
 	public NQCandidate copy() {
-		return new NQCandidate(Arrays.copyOf(this.genes, this.genes.length));
+		return new NQCandidate(Arrays.copyOf(this.genes, this.genes.length),this.getFitness());
 	}
 
 	@Override
 	public String toString() {
-		String retVal = "";
-		for (int i : this.genes) {
-			retVal += i+" ";
-		}
-		return retVal.trim();
+		return this.getFitness()+"-("+this+")";
 	}
 
 	@Override

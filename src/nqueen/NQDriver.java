@@ -1,5 +1,9 @@
 package nqueen;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Random;
 
 import basic.EvalBarrier;
@@ -34,26 +38,41 @@ public class NQDriver {
 		// our evaluator was a good place for these almost static methods
 		GeneTool geneTool = eval;
 		
-		Overlord overlord = new Overlord(population, eval, geneTool, b, 12);
+		Overlord overlord = new Overlord(population, eval, geneTool, b, 4);
 		
-		for (int i=0; i<Config.GENERATIONS; i++){
-			//System.err.println("running a generation...");
-			int ret;
+		PrintStream output = System.err;
+		
+		FileOutputStream f;
+		try {
+			f = new FileOutputStream("output.txt");
+			output = new PrintStream(f);
+		} catch (FileNotFoundException e1) {
+			
+		}
+		
+		int max = 0;
+		int i;
+		for (i=0; !overlord.isDone(fitness.maxFitness()); i++){
 			try {
-				ret = overlord.runGeneration();
-				// TODO lets save our progress every 50 generations
-				if (i % 50 == 0) {
-					//population.savePopulation("population"+i+".csv");
-					System.err.println();
-				}
+				overlord.runGeneration();
 				
-				System.err.println(i+" "+ret);
+				NQCandidate bestCand = (NQCandidate) overlord.getBest();
+				
+				if (bestCand.getFitness()>=max){
+					output.printf("%s\t%s\t%s\t%s\n",i,overlord.populationFitness(),bestCand.getFitness(),bestCand.getGenes());
+					max = bestCand.getFitness();
+				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
+		NQCandidate bestCand = (NQCandidate) overlord.getBest();
+		output.printf("%s\t%s\t%s\t%s\n",i,overlord.populationFitness(),bestCand.getFitness(),bestCand.getGenes());
+		
+		//System.err.println("tidying up!");
+		overlord.joinThreads();
 	}
 
 }

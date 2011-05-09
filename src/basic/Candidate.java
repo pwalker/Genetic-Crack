@@ -17,7 +17,7 @@ public abstract class Candidate implements Comparable<Candidate> {
 	}
 	
 	public int compareTo(Candidate other) {
-		return this.fitness - other.getFitness();
+		return this.getFitness() - other.getFitness();
 	}
 
 	public abstract Candidate copy();
