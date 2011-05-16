@@ -13,9 +13,9 @@ public class RegularHelper extends Thread implements Helper {
 	private LinkedBlockingQueue<Candidate> input;
 	private LinkedBlockingQueue<Candidate> output;
 
-	public RegularHelper(LinkedBlockingQueue<Candidate> incoming,
+	public RegularHelper(Directory dir, LinkedBlockingQueue<Candidate> incoming,
 			LinkedBlockingQueue<Candidate> outgoing) {
-		// TODO Auto-generated constructor stub
+		this.others = dir.register(this);
 	}
 
 	/**
