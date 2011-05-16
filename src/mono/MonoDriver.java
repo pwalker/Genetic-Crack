@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
+
 import basic.EvalBarrier;
 import basic.Fitness;
 import basic.GeneTool;
@@ -48,7 +49,7 @@ public class MonoDriver {
 		// setup our threadpool barrier
 		EvalBarrier b = new EvalBarrier();
 		
-		Population population = new Population(Config.POPULATION_SIZE, eval, b);
+		Population population = new Population(Config.POPULATION_SIZE, eval, b, null);
 		
 		// initialize the population
 		for (int i=0;i<Config.POPULATION_SIZE;i++){

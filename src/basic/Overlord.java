@@ -1,5 +1,6 @@
 package basic;
 
+
 public class Overlord {
 
 	private GeneTool geneTool;
@@ -7,7 +8,6 @@ public class Overlord {
 	private Evaluator eval;
 	private EvalRunner[] runners;
 	private EvalBarrier barrier;
-	//private Thread[] threads;
 	
 	public Overlord(Population population, Evaluator eval, GeneTool geneTool, EvalBarrier b, int threads) {
 		this.geneTool = geneTool;
@@ -55,18 +55,6 @@ public class Overlord {
 
 	public int populationFitness() {
 		return this.population.totalFitness();
-	}
-	
-
-	public void joinThreads() {
-		for (EvalRunner er : this.runners){
-			try {
-				er.join(1);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public Candidate getBest() {

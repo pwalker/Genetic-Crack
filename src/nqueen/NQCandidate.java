@@ -66,7 +66,7 @@ public class NQCandidate extends Candidate {
 
 	@Override
 	public String toString() {
-		return this.getFitness()+"-("+this+")";
+		return this.getFitness()+"-("+this.getGenes()+")";
 	}
 
 	@Override

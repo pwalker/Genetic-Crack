@@ -8,17 +8,18 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import nqueen.NQCandidate;
+import nqueen.NQEvaluator;
 
 public class Population {
 
 	private int popSize;
 	private ArrayList<Candidate> list;
 	private Comparator<Candidate> comparator;
-	
 	private LinkedBlockingQueue<Candidate> work;
 	private EvalBarrier barrier;
+	private CandidateFeed feed;
 
-	public Population(int size, Comparator<Candidate> comp, EvalBarrier b) {
+	public Population(int size, Comparator<Candidate> comp, EvalBarrier b, CandidateFeed feed) {
 		this.popSize = size;
 
 		// make our ArrayList, to size
@@ -26,10 +27,14 @@ public class Population {
 		this.list.ensureCapacity(size);
 
 		this.comparator = comp;
-		
+
 		this.work = new LinkedBlockingQueue<Candidate>();
-		
+
 		this.barrier = b;
+
+		// we aren't using a feed
+
+		this.feed = feed;
 	}
 
 	public void add(Candidate c) {
@@ -37,25 +42,36 @@ public class Population {
 
 		this.list.add(c);
 	}
-	
+
 	public LinkedBlockingQueue<Candidate> getWorkQueue() {
 		return this.work;
 	}
 
 	public void crossoverFill(GeneTool geneTool) throws Exception {
-		// make a new population list to replace the current one, picking in a
-		// method similar to select (where larger fitness means larger
-		// probability of selection)
-
-		// TODO instead of the above I will be doing something naive, filling up
-		// the hole in the population by selection, then shuffling, then
-		// crossing everything over
-
-		// fill the population back up
 		int n = this.popSize - this.list.size();
-		
+
+		// let's see if we can fill up the population from the feed, before our
+		// selection
+		if (this.feed != null) {
+			// save the original size;
+			int originalSize = this.list.size();
+
+			// take as many as we can from the feed
+			this.list.addAll(this.feed.next(n));
+
+			// trim the fat
+			// put the weak candidates at the end of the list
+			//Collections.sort(this.list, this.comparator);
+			this.sortCandidates();
+			Collections.reverse(this.list);
+			// remove down to the original selected size!
+			while (this.list.size() > originalSize) {
+				this.list.remove(originalSize);
+			}
+		}
+
 		// since we want duplicates, make some copies
-		for (Candidate c : this.throwDarts(n)){
+		for (Candidate c : this.throwDarts(n)) {
 			this.list.add(c.copy());
 		}
 
@@ -77,31 +93,23 @@ public class Population {
 
 	// TODO these methods should be elsewhere
 	/*
-	public void loadPopulation(String file) {
-		// get rid of our current population
-		this.list.clear();
-
-		try {
-			File input = new File(file);
-
-			Scanner s = new Scanner(input);
-			// TODO check to make sure we don't go over size! or should we load
-			// everything, and then update the size
-			while (s.hasNext()) {
-				// TODO how can make this be a MonoCandidate?
-				Candidate c = new Candidate(s.next());
-				c.setFitness(s.nextInt());
-				this.add(c);
-			}
-
-			s.close();
-
-		} catch (Exception e) {
-		}
-
-		this.list.trimToSize();
-	}
-	*/
+	 * public void loadPopulation(String file) { // get rid of our current
+	 * population this.list.clear();
+	 * 
+	 * try { File input = new File(file);
+	 * 
+	 * Scanner s = new Scanner(input); // TODO check to make sure we don't go
+	 * over size! or should we load // everything, and then update the size
+	 * while (s.hasNext()) { // TODO how can make this be a MonoCandidate?
+	 * Candidate c = new Candidate(s.next()); c.setFitness(s.nextInt());
+	 * this.add(c); }
+	 * 
+	 * s.close();
+	 * 
+	 * } catch (Exception e) { }
+	 * 
+	 * this.list.trimToSize(); }
+	 */
 
 	public void mutate(GeneTool geneTool, double percent) throws Exception {
 		// how many do we want?
@@ -117,30 +125,24 @@ public class Population {
 	}
 
 	/*
-	public void savePopulation(String file) {
-		// sort things so we are guaranteed a fitness
-		//Collections.sort(this.list);
-		this.evaluateCandidates();
-		
-		// try and open the file
-		try {
-			File output = new File(file);
-			output.createNewFile();
-
-			PrintWriter out = new PrintWriter(output);
-
-			out.println("Genes,fitness");
-			
-			for (Candidate c : this.list) {
-				out.println(c.getGenes()+","+c.getFitness());
-			}
-
-			out.close();
-
-		} catch (Exception e) {
-		}
-	}
-	*/
+	 * public void savePopulation(String file) { // sort things so we are
+	 * guaranteed a fitness //Collections.sort(this.list);
+	 * this.evaluateCandidates();
+	 * 
+	 * // try and open the file try { File output = new File(file);
+	 * output.createNewFile();
+	 * 
+	 * PrintWriter out = new PrintWriter(output);
+	 * 
+	 * out.println("Genes,fitness");
+	 * 
+	 * for (Candidate c : this.list) {
+	 * out.println(c.getGenes()+","+c.getFitness()); }
+	 * 
+	 * out.close();
+	 * 
+	 * } catch (Exception e) { } }
+	 */
 
 	public void select(double percent) throws Exception {
 		// lets sort our list
@@ -158,24 +160,25 @@ public class Population {
 
 		// fill it up
 		newList.addAll(throwDarts(n));
-		
+
 		this.list = newList;
 	}
 
 	public ArrayList<Candidate> sortCandidates() {
 		// give them all a fitness
 		this.evaluateCandidates();
-		
+
 		Collections.sort(this.list, this.comparator);
 		return this.list;
 	}
 
 	private ArrayList<Candidate> throwDarts(int n) throws Exception {
 		// Let's sort the list, so we candidates have valid fitness numbers
-		//Collections.sort(this.list);
-		// Lets add all the Candidate's with no fitness numbers to the queue, I think we need to block on this
+		// Collections.sort(this.list);
+		// Lets add all the Candidate's with no fitness numbers to the queue, I
+		// think we need to block on this
 		this.evaluateCandidates();
-		//mix them for random's sake
+		// mix them for random's sake
 		Collections.shuffle(this.list);
 
 		// lets get the total fitness
@@ -185,8 +188,8 @@ public class Population {
 			if (c.getFitness() < 0) {
 				throw new Exception("Not all candidates have been evaluated");
 			}
-			//totalFit += Math.max(c.getFitness(), 1);
-			//totalFit += c.getFitness()+1;
+			// totalFit += Math.max(c.getFitness(), 1);
+			// totalFit += c.getFitness()+1;
 			totalFit += c.getFitness();
 		}
 
@@ -198,18 +201,18 @@ public class Population {
 		Random r = new Random();
 		while (retVal.size() < n) {
 			int rand = r.nextInt(totalFit);
-			
+
 			throwDart: for (Candidate c : this.list) {
 				// did we land on the right one?
 				if (rand < c.getFitness()) {
-					//retVal.add(c.copy());
+					// retVal.add(c.copy());
 					retVal.add(c);
 					break throwDart;
 				}
 
 				// skip to the next wheel position.
-				//rand = rand - Math.max(c.getFitness(), 1);
-				//rand = rand - c.getFitness() + 1;
+				// rand = rand - Math.max(c.getFitness(), 1);
+				// rand = rand - c.getFitness() + 1;
 				rand = rand - c.getFitness();
 			}
 		}
@@ -222,26 +225,26 @@ public class Population {
 		try {
 			// figure out what we are doing
 			ArrayList<Candidate> queue = this.queueCandidates(this.list);
-			
+
 			this.barrier.reset(queue.size());
-			
+
 			// generate our work
-			for (Candidate c :  queue){
+			for (Candidate c : queue) {
 				this.work.put(c);
 			}
-			
+
 			// wait till the queue gets done
-			this.barrier.pause();		
-			
+			this.barrier.pause();
+
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		
 	}
 
-	private ArrayList<Candidate> queueCandidates(ArrayList<Candidate> incoming) throws InterruptedException {
+	private ArrayList<Candidate> queueCandidates(ArrayList<Candidate> incoming)
+			throws InterruptedException {
 		ArrayList<Candidate> acc = new ArrayList<Candidate>();
 		for (Candidate c : incoming) {
 			if (c.getFitness() < 0) {
@@ -254,10 +257,10 @@ public class Population {
 	public int totalFitness() {
 		// ensure that everyon has a fitness
 		this.evaluateCandidates();
-		
+
 		// sum them up!
 		int retVal = 0;
-		for (Candidate c : this.list){
+		for (Candidate c : this.list) {
 			retVal += c.getFitness();
 		}
 		return retVal;
@@ -266,9 +269,9 @@ public class Population {
 	public boolean containsFitness(int fit) {
 		// ensure we have some kind of ordering
 		this.evaluateCandidates();
-		
+
 		for (Candidate c : this.list) {
-			if (c.getFitness() >= fit){
+			if (c.getFitness() >= fit) {
 				return true;
 			}
 		}
