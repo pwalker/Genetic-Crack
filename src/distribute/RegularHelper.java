@@ -30,7 +30,7 @@ public class RegularHelper extends Thread implements Helper {
 		while (true) {
 			// prepare a packet to send
 			ArrayList<Candidate> packet = new ArrayList<Candidate>();
-			this.output.drainTo(packet, 50);
+			this.output.drainTo(packet, 20);
 
 			for (Helper o : this.others) {
 				o.put(packet);
