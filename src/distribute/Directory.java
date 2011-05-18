@@ -1,24 +1,34 @@
 package distribute;
 
+import java.io.Serializable;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 import basic.EvalBarrier;
 
-public class Directory implements Remote {
+public class Directory extends UnicastRemoteObject implements Remote, Serializable, IDirectory {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	EvalBarrier b;
 	private Helper[] helpers;
 
-	public Directory(int n) {
+	public Directory(int n) throws RemoteException {
 		this.b = new EvalBarrier();
 		b.newMax(n);
 		this.helpers = new Helper[n];
 	}
 
+	/* (non-Javadoc)
+	 * @see distribute.IDirectory#register(distribute.Helper)
+	 */
+	@Override
 	public Helper[] register(Helper h) {
 		// let the barrier know we have registered
 		synchronized (this) {
@@ -31,11 +41,13 @@ public class Directory implements Remote {
 					break;
 				}
 			}
+			
+			System.err.println(h+" registerd!");
 		}
 
 		// pause for others to register
 		this.b.pause();
-
+		
 		return this.helpers;
 	}
 
@@ -51,7 +63,7 @@ public class Directory implements Remote {
 		Registry registry = LocateRegistry
 				.createRegistry(Registry.REGISTRY_PORT);
 
-		Directory directory = new Directory(4);
+		IDirectory directory = new Directory(2);
 		String s = "RegionDirectory";
 
 		registry.bind(s, directory);
@@ -60,7 +72,7 @@ public class Directory implements Remote {
 		}
 
 		// keep running till we are done.
-		directory.allConnect();
+		((Directory)directory).allConnect();
 
 	}
 

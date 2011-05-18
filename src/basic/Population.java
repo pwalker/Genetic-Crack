@@ -59,6 +59,10 @@ public class Population {
 			// take as many as we can from the feed
 			this.list.addAll(this.feed.next(n));
 
+			if ((this.list.size() - originalSize) > 0){
+				System.err.println("Trying to incorporate "+(this.list.size() - originalSize)+" new candidates");
+			}
+			
 			// trim the fat
 			// put the weak candidates at the end of the list
 			//Collections.sort(this.list, this.comparator);
@@ -276,6 +280,10 @@ public class Population {
 			}
 		}
 		return false;
+	}
+
+	public void setFeed(CandidateFeed feed2) {
+		this.feed = feed2;
 	}
 
 }

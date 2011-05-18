@@ -1,6 +1,7 @@
 package distribute;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.Collection;
 
 import basic.Candidate;
@@ -15,6 +16,8 @@ import basic.Candidate;
  */
 public interface Helper extends Remote {
 
-	void put (Collection<Candidate> candidates);
+	void put (Collection<Candidate> candidates) throws RemoteException;
 
+	void finish() throws RemoteException;
+	
 }

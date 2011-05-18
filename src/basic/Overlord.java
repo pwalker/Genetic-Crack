@@ -1,5 +1,8 @@
 package basic;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 
 public class Overlord {
 
@@ -59,6 +62,14 @@ public class Overlord {
 
 	public Candidate getBest() {
 		return this.population.sortCandidates().get(this.population.getSize()-1);
+	}
+
+	public Collection<? extends Candidate> topCopy(int n) {
+		HashSet<Candidate> retVal = new HashSet<Candidate>();
+		for (Candidate c : this.population.sortCandidates().subList(this.population.getSize()-n, this.population.getSize())){
+			retVal.add(c.copy());
+		}
+		return retVal;
 	}
 	
 }

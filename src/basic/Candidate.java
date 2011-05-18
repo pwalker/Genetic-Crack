@@ -1,5 +1,7 @@
 package basic;
 
+import java.io.Serializable;
+
 /**
  * A struct-type class. Stores a gene sequence.
  * 
@@ -7,8 +9,9 @@ package basic;
  * 
  */
 
-public abstract class Candidate implements Comparable<Candidate> {
+public abstract class Candidate implements Comparable<Candidate>, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	// this is a cached value!
 	protected int fitness;
 	

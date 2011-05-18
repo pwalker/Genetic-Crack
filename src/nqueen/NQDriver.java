@@ -2,6 +2,8 @@ package nqueen;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import distribute.Helper;
+
 import basic.Candidate;
 import basic.CandidateFeed;
 import basic.EvalBarrier;
@@ -21,6 +23,7 @@ public class NQDriver extends Driver {
 		this.output = null;
 		this.pop = new Population(100, eval, b, feed);
 		this.threads = 1;
+		this.help = null;
 		
 		// initialize the population
 		for (int i=0;i<Config.POPULATION_SIZE;i++){
@@ -30,8 +33,8 @@ public class NQDriver extends Driver {
 	}
 	
 	public NQDriver(CandidateFeed feed, LinkedBlockingQueue<Candidate> outgoing) {
-		super();
-		this.feed = feed;
+		this();
+		this.pop.setFeed(feed);
 		this.output = outgoing;
 	}
 
