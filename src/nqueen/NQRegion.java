@@ -52,6 +52,7 @@ public class NQRegion extends Region {
 			server = (IDirectory)java.rmi.Naming.lookup(s);
 			// create a local client
 			NQRegion r = new NQRegion(server);
+			System.err.println("Connected to "+server+", starting thread...");
 			r.start();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block

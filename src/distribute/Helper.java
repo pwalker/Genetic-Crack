@@ -18,6 +18,6 @@ public interface Helper extends Remote {
 
 	void put (Collection<Candidate> candidates) throws RemoteException;
 
-	void finish() throws RemoteException;
+	void kill() throws RemoteException;
 	
 }

@@ -18,6 +18,7 @@ public class Driver extends Thread {
 	protected Overlord overlord;
 	protected int threads = 1;
 	protected Helper help;
+	protected boolean isDone = false;
 
 	/**
 	 * You MUST implement a constructor that sets all this up!
@@ -30,14 +31,15 @@ public class Driver extends Thread {
 
 		int max = 0;
 		int i;
-		for (i = 0; !overlord.isDone(this.fitness.maxFitness()); i++) {
+		for (i = 0; !overlord.isDone(this.fitness.maxFitness()) && !this.isDone ; i++) {
 			try {
 				overlord.runGeneration();
-
+				//System.err.print(".");
+				
 				NQCandidate bestCand = (NQCandidate) overlord.getBest();
 
 				if (bestCand.getFitness() >= max) {
-					System.err.printf("%s\t%s\t%s\t%s\n", i,
+					System.err.printf("\n%s\t%s\t%s\t%s\n", i,
 							overlord.populationFitness(),
 							bestCand.getFitness(), bestCand.getGenes());
 					max = bestCand.getFitness();
@@ -64,6 +66,12 @@ public class Driver extends Thread {
 
 	public void giveHelper(Helper h){
 		this.help = h;
+	}
+
+	// don't run anymore generations!
+	public void finish() {
+		System.err.println("finishing");
+		this.isDone = true;
 	}
 
 }

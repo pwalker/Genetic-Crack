@@ -20,6 +20,7 @@ public class RegularHelper extends UnicastRemoteObject implements Runnable, Help
 	private LinkedBlockingQueue<Candidate> input;
 	private LinkedBlockingQueue<Candidate> output;
 	private Driver d;
+	private boolean cont = true;
 
 	public RegularHelper(IDirectory dir, Driver d, LinkedBlockingQueue<Candidate> incoming,
 			LinkedBlockingQueue<Candidate> outgoing) throws RemoteException {
@@ -42,7 +43,7 @@ public class RegularHelper extends UnicastRemoteObject implements Runnable, Help
 	}
 
 	public void run() {
-		while (true) {
+		while (this.cont) {
 			// prepare a packet to send
 			ArrayList<Candidate> packet = new ArrayList<Candidate>();
 			System.err.println("Draining...");
@@ -81,11 +82,12 @@ public class RegularHelper extends UnicastRemoteObject implements Runnable, Help
 	}
 
 	public void done(){
+		System.err.println("Telling others to stop");
 		for (Helper o : this.others) {
 			System.err.println("Sending STOP to "+o);
 			if (o != this){
 				try {
-					o.finish();
+					o.kill();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -95,9 +97,10 @@ public class RegularHelper extends UnicastRemoteObject implements Runnable, Help
 	}
 
 	@Override
-	public void finish() throws RemoteException {
-		// lets kill the driver thread, and then this one!
-		this.d.stop();
+	public void kill() throws RemoteException {
+		System.err.println("Recieved kill");
+		this.cont = false;
+		this.d.finish();
 	}
 
 }
