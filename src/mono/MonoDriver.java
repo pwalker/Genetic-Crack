@@ -2,22 +2,19 @@ package mono;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.LinkedBlockingQueue;
 
-
+import basic.Candidate;
+import basic.CandidateFeed;
+import basic.Driver;
 import basic.EvalBarrier;
-import basic.Fitness;
-import basic.GeneTool;
 import basic.Overlord;
 import basic.Population;
 
-public class MonoDriver {
+public class MonoDriver extends Driver {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public MonoDriver() {
 		// Read in plaintext from stdin
 		/*Scanner s = new Scanner(System.in);
 		String plainText = "";
@@ -42,44 +39,52 @@ public class MonoDriver {
 			System.exit(1);
 		}
 		
-		Fitness fitness = new MonoFitness("words.txt",new MonoCipher(),cipherText);
+		this.fitness = new MonoFitness("words.txt",new MonoCipher(),cipherText);
 		
-		MonoEvaluator eval = new MonoEvaluator(fitness);
+		MonoEvaluator meval = new MonoEvaluator(fitness);
+		this.eval = meval;
+		this.geneTool = meval;
+
+		this.b = new EvalBarrier();
 		
-		// setup our threadpool barrier
-		EvalBarrier b = new EvalBarrier();
-		
-		Population population = new Population(Config.POPULATION_SIZE, eval, b, null);
+		this.pop = new Population(Config.POPULATION_SIZE, eval, b, null);
 		
 		// initialize the population
 		for (int i=0;i<Config.POPULATION_SIZE;i++){
-			population.add(new MonoCandidate());
+			pop.add(new MonoCandidate());
 		}
-		
-		//Random rand = new Random();
-		
-		// our evaluator was a good place for these almost static methods
-		GeneTool geneTool = eval;
-		
-		Overlord overlord = new Overlord(population, eval, geneTool, b, 4);
-		
-		for (int i=0; i<Config.GENERATIONS; i++){
-			//System.err.println("running a generation...");
-			try {
-				overlord.runGeneration();
-				MonoCandidate bestCand = (MonoCandidate) overlord.getBest();
-				// TODO lets save our progress every 50 generations
-				//if (i % 50 == 0) {
-				//	population.savePopulation("population"+i+".csv");
-				//}
 				
-				System.err.printf("%s\t%s\t%s\t%s\n",i,overlord.populationFitness(),bestCand.getFitness(),bestCand.getGenes());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		this.overlord = new Overlord(pop, eval, geneTool, b, 4);
 		
+//		for (int i=0; i<Config.GENERATIONS; i++){
+//			//System.err.println("running a generation...");
+//			try {
+//				overlord.runGeneration();
+//				MonoCandidate bestCand = (MonoCandidate) overlord.getBest();
+//				// TODO lets save our progress every 50 generations
+//				//if (i % 50 == 0) {
+//				//	population.savePopulation("population"+i+".csv");
+//				//}
+//				
+//				System.err.printf("%s\t%s\t%s\t%s\n",i,overlord.populationFitness(),bestCand.getFitness(),bestCand.getGenes());
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+		
+	}
+	
+	public MonoDriver(CandidateFeed feed, LinkedBlockingQueue<Candidate> outgoing) {
+		this();
+		this.pop.setFeed(feed);
+		this.output = outgoing;
+	}
+	
+	// just so you can run this by itself
+	public static void main(String args[]){
+		MonoDriver driver = new MonoDriver();
+		driver.start();
 	}
 
 }

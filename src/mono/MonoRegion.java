@@ -1,4 +1,4 @@
-package nqueen;
+package mono;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
@@ -13,16 +13,16 @@ import distribute.Region;
 import basic.Candidate;
 import basic.CandidateFeed;
 
-public class NQRegion extends Region {
+public class MonoRegion extends Region {
 
-	NQRegion(IDirectory dir) throws RemoteException {
+	MonoRegion(IDirectory dir) throws RemoteException {
 		LinkedBlockingQueue<Candidate> incoming = new LinkedBlockingQueue<Candidate>();
 		LinkedBlockingQueue<Candidate> outgoing = new LinkedBlockingQueue<Candidate>();
 		
 		CandidateFeed feed = new QueueFeed(incoming);
 		
 		// create driver
-		this.d = new NQDriver(feed, outgoing);
+		this.d = new MonoDriver(feed, outgoing);
 
 		// create helper
 		this.h = new RegularHelper(dir, this.d, incoming, outgoing);
@@ -51,7 +51,7 @@ public class NQRegion extends Region {
 			server = (IDirectory)java.rmi.Naming.lookup(s);
 			// create a local client
 			System.err.println("Connecting...");
-			NQRegion r = new NQRegion(server);
+			MonoRegion r = new MonoRegion(server);
 			System.err.println("Connected to "+server+", starting thread...");
 			r.start();
 		} catch (MalformedURLException e) {
