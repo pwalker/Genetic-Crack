@@ -31,7 +31,7 @@ public class MonoDriver extends Driver {
 		try {
 			Scanner s = new Scanner(new File("cipher.txt"));
 			while (s.hasNextLine()){
-				cipherText += s.nextLine();
+				cipherText += s.nextLine().replaceAll(" ", "");
 			}
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -39,7 +39,7 @@ public class MonoDriver extends Driver {
 			System.exit(1);
 		}
 		
-		this.fitness = new MonoFitness("words.txt",new MonoCipher(),cipherText);
+		this.fitness = new MonoFitness("plain.txt",new MonoCipher(),cipherText);
 		
 		MonoEvaluator meval = new MonoEvaluator(fitness);
 		this.eval = meval;
@@ -47,7 +47,7 @@ public class MonoDriver extends Driver {
 
 		this.b = new EvalBarrier();
 		
-		this.pop = new Population(Config.POPULATION_SIZE, eval, b, null);
+		this.pop = new Population(500, eval, b, null);
 		
 		// initialize the population
 		for (int i=0;i<Config.POPULATION_SIZE;i++){

@@ -92,4 +92,13 @@ public class NQFitness extends Fitness {
 	public int maxFitness() {
 		return this.factSum(Config.N-1);
 	}
+	
+	@Override
+	public void printSoln(Candidate best) {
+		if (best instanceof NQCandidate) {
+			System.out.printf("Final solution: %s",((NQCandidate) best).getGenes());
+		} else {
+			throw new UnsupportedOperationException("candidate is not a NQCandidate");
+		}
+	}
 }

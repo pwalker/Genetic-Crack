@@ -4,8 +4,6 @@ import java.util.Queue;
 
 import distribute.Helper;
 
-import nqueen.NQCandidate;
-
 public class Driver extends Thread {
 
 	protected Fitness fitness;
@@ -31,24 +29,24 @@ public class Driver extends Thread {
 
 		int max = 0;
 		int i;
-		for (i = 0; !overlord.isDone(this.fitness.maxFitness()) && !this.isDone ; i++) {
+		for (i = 0; !this.overlord.isDone(this.fitness.maxFitness()) && !this.isDone ; i++) {
 			try {
-				overlord.runGeneration();
+				this.overlord.runGeneration();
 				//System.err.print(".");
 				
-				NQCandidate bestCand = (NQCandidate) overlord.getBest();
+				Candidate bestCand = (Candidate) this.overlord.getBest();
 
 				if (bestCand.getFitness() >= max) {
 					System.err.printf("\n%s\t%s\t%s\t%s\n", i,
-							overlord.populationFitness(),
-							bestCand.getFitness(), bestCand.getGenes());
+							this.overlord.populationFitness(),
+							bestCand.getFitness(), /*bestCand.getGenes()*/ "no genes");
 					max = bestCand.getFitness();
 					
 					// put some candidates into the output (top 5% of them)
 					if (this.output != null){
 						int n = (int) Math.floor(this.pop.getSize() * .05);
 						System.err.println("Adding "+n+" to outgoing queue!");
-						this.output.addAll(overlord.topCopy(n));
+						this.output.addAll(this.overlord.topCopy(n));
 					}
 				}
 			} catch (Exception e) {
@@ -58,9 +56,7 @@ public class Driver extends Thread {
 
 		}
 
-		NQCandidate bestCand = (NQCandidate) overlord.getBest();
-		System.out.printf("%s\t%s\t%s\t%s\n", i, overlord.populationFitness(),
-				bestCand.getFitness(), bestCand.getGenes());
+		this.fitness.printSoln(this.overlord.getBest());
 
 	}
 

@@ -204,7 +204,7 @@ public class Population {
 		// throw some darts
 		Random r = new Random();
 		while (retVal.size() < n) {
-			int rand = r.nextInt(totalFit);
+			int rand = r.nextInt(Math.max(2,totalFit));
 
 			throwDart: for (Candidate c : this.list) {
 				// did we land on the right one?

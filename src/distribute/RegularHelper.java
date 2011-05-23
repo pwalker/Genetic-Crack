@@ -39,19 +39,19 @@ public class RegularHelper extends UnicastRemoteObject implements Runnable, Help
 	@Override
 	public void put(Collection<Candidate> candidates) {
 		this.input.addAll(candidates);
-		System.err.println("Received "+candidates.size()+" new candidates");
+		//System.err.println("Received "+candidates.size()+" new candidates");
 	}
 
 	public void run() {
 		while (this.cont) {
 			// prepare a packet to send
 			ArrayList<Candidate> packet = new ArrayList<Candidate>();
-			System.err.println("Draining...");
+			//System.err.println("Draining...");
 			this.createPacket(this.output, packet, 30);
 
 			for (Helper o : this.others) {
 				if (o != this){
-					System.err.println("Sending to "+o);
+					//System.err.println("Sending to "+o);
 					try {
 						o.put(packet);
 					} catch (RemoteException e) {

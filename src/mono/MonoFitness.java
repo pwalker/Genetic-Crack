@@ -3,7 +3,6 @@ package mono;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -54,7 +53,7 @@ public class MonoFitness extends Fitness {
 				String word = s.next().toLowerCase().replaceAll("[^a-z]", "");
 				
 				// we don't want to add the letters
-				if (word.length() > 3){
+				if (word.length() >= 3){
 					MonoFitness.trie.add(word);
 				}
 			}
@@ -73,7 +72,7 @@ public class MonoFitness extends Fitness {
 			int acc = 0;
 			
 			// does the plaintext contain any words?
-			acc += wordCount(c);
+			acc += this.wordPercent(c);
 			
 			// how well do the frequencies line up with what's expected?
 			//acc += freqAnalyze(c);
@@ -123,7 +122,7 @@ public class MonoFitness extends Fitness {
 			}
 			
 			// put ch in the list somewhere
-			insert: for (int i=0; i<retVal.size(); i++) {
+			for (int i=0; i<retVal.size(); i++) {
 				Character current = retVal.get(i);
 				if (freqs.get(ch) > freqs.get(current)) {
 					// make an insertion
@@ -168,47 +167,53 @@ public class MonoFitness extends Fitness {
 	 * @param plaintext
 	 * @return
 	 */
-	public int wordCount(MonoCandidate c) {
+	public int letterCount(MonoCandidate c) {
 		String plainText = this.cipher.decrypt(c.getGenes(), this.cipherText);
 		
 		int acc = 0;
 		
-		for (int i=0; i<plainText.length(); i++){
-			int n = trie.containsBeginning(plainText.substring(i));
+		for (int i=0; i<plainText.length();){
+			String sub = plainText.substring(i);
+			int n = trie.containsBeginning(sub);
 			if (n > 0){
 				// skip over the word
 				i += n;
 				
-				// acc += n;
-				// try and make the fitness weight longer words more
-				if (n > 4){
-					acc += n * 2;
-				} else {
-					acc += 1;
-				}
+				acc += n;
+			} else {
+				i++;
 			}
-			// System.err.println(plainText.substring(i)+" - "+trie.containsBeginning(plainText.substring(i)));
 		}
 		
 		return acc;
 	}
 
-	/**
-	 * Make an even grosser approximation of English, and do a brief cursory
-	 * examination of common words or something like that
-	 * 
-	 * @param plaintext
-	 * @return
+	/*
+	 * Calculate the number of letters that contribute to a word
 	 */
-	public double quickFitness(String plaintext) {
-		// TODO
-		return 0.0;
-	}
+	public int wordPercent (MonoCandidate c) {
+		double wc = this.letterCount(c);
+		
+		if (wc < 0) return 0;
+		
+		double len = this.cipherText.length();
 
+		return (int) Math.floor((wc/len)*100);
+	}
+	
 	@Override
 	public int maxFitness() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 78;
+	}
+
+	@Override
+	public void printSoln(Candidate best) {
+		if (best instanceof MonoCandidate) {
+			System.out.printf("Final solution: %s",((MonoCandidate) best).getGenes());
+		} else {
+			throw new UnsupportedOperationException("candidate is not a MonoCandidate");
+		}
 	}
 
 }
