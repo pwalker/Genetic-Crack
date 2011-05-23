@@ -1,0 +1,7 @@
+The code was originally for a school project, and working alone, git
+was simply used as a cool way to transfer files, so there are many
+savepoints with very improper commit messages.
+
+Take a look at the files in basic, for things to override for a
+specific problem.  There are probably better ways to do things,
+especially configurations, but this is whats worked.
