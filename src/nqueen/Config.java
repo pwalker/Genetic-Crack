@@ -12,7 +12,7 @@ public final class Config {
 	
 	public static final double MUTATE_THRESHOLD = 1;
 
-	public static final int POPULATION_SIZE = 30;
+	public static final int POPULATION_SIZE = 100;
 
 	public static final int GENERATIONS = 500;
 	

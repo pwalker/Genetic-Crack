@@ -22,7 +22,7 @@ public class NQDriver extends Driver {
 		this.feed = null;
 		this.output = null;
 		this.pop = new Population(100, eval, b, feed);
-		this.threads = 1;
+		this.threads = 2;
 		this.help = null;
 		
 		// initialize the population

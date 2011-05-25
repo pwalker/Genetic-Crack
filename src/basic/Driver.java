@@ -39,7 +39,7 @@ public class Driver extends Thread {
 				if (bestCand.getFitness() >= max) {
 					System.err.printf("\n%s\t%s\t%s\t%s\n", i,
 							this.overlord.populationFitness(),
-							bestCand.getFitness(), /*bestCand.getGenes()*/ "no genes");
+							bestCand.getFitness(), this.fitness.candGenes(bestCand) /*bestCand.getGenes()*/);
 					max = bestCand.getFitness();
 					
 					// put some candidates into the output (top 5% of them)

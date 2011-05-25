@@ -216,4 +216,9 @@ public class MonoFitness extends Fitness {
 		}
 	}
 
+	@Override
+	public String candGenes(Candidate bestCand) {
+		return ((MonoCandidate)bestCand).toString();
+	}
+
 }

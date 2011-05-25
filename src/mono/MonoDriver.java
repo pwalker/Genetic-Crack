@@ -39,7 +39,7 @@ public class MonoDriver extends Driver {
 			System.exit(1);
 		}
 		
-		this.fitness = new MonoFitness("plain.txt",new MonoCipher(),cipherText);
+		this.fitness = new MonoFitness("top1000.txt",new MonoCipher(),cipherText);
 		
 		MonoEvaluator meval = new MonoEvaluator(fitness);
 		this.eval = meval;

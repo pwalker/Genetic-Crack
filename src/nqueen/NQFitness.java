@@ -101,4 +101,10 @@ public class NQFitness extends Fitness {
 			throw new UnsupportedOperationException("candidate is not a NQCandidate");
 		}
 	}
+
+	@Override
+	public String candGenes(Candidate bestCand) {
+		return ((NQCandidate)bestCand).toString();
+	}
+
 }

@@ -7,5 +7,7 @@ public abstract class Fitness {
 	public abstract int maxFitness();
 
 	public abstract void printSoln(Candidate best);
+
+	public abstract String candGenes(Candidate bestCand);
 	
 }
